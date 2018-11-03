@@ -45,6 +45,7 @@
 		21E8CA7E2171CF7800936700 /* debugserver.tar in Resources */ = {isa = PBXBuildFile; fileRef = 21E8CA7D2171CF7700936700 /* debugserver.tar */; };
 		21FED6A72168DB460024BC95 /* Painting_With_Chocolate.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 21FED6A42168DB460024BC95 /* Painting_With_Chocolate.ttf */; };
 		21FED6AB2168F8060024BC95 /* SettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 21C130E5214BDDE20021AA9D /* SettingsTableViewController.m */; };
+		D6B2BD0F218E42FA00F3CC8A /* mx_common.c in Sources */ = {isa = PBXBuildFile; fileRef = D6B2BD0D218E42FA00F3CC8A /* mx_common.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -112,6 +113,8 @@
 		21C1312E214D5A710021AA9D /* multi_path.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = multi_path.entitlements; sourceTree = "<group>"; };
 		21E8CA7D2171CF7700936700 /* debugserver.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = debugserver.tar; sourceTree = "<group>"; };
 		21FED6A42168DB460024BC95 /* Painting_With_Chocolate.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Painting_With_Chocolate.ttf; sourceTree = "<group>"; };
+		D6B2BD0D218E42FA00F3CC8A /* mx_common.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mx_common.c; sourceTree = "<group>"; };
+		D6B2BD0E218E42FA00F3CC8A /* mx_common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mx_common.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,6 +203,8 @@
 				212D8842216E4C4700A36DA5 /* find_port.c */,
 				212D8843216E4C4700A36DA5 /* find_port.h */,
 				21C0FC8521369EE900849420 /* empty_list_sploit.c */,
+				D6B2BD0D218E42FA00F3CC8A /* mx_common.c */,
+				D6B2BD0E218E42FA00F3CC8A /* mx_common.h */,
 				21C0FC8121369EE900849420 /* empty_list_sploit.h */,
 				21C13117214D268F0021AA9D /* multi_path_sploit.c */,
 				21C13118214D268F0021AA9D /* multi_path_sploit.h */,
@@ -255,7 +260,7 @@
 				TargetAttributes = {
 					21C0FC6621369EB700849420 = {
 						CreatedOnToolsVersion = 9.4.1;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -324,6 +329,7 @@
 				21A97FD32148103C00DC0023 /* kutils.c in Sources */,
 				21C0FC8A21369EE900849420 /* offsets.m in Sources */,
 				212D884A216E4EBF00A36DA5 /* async_wake.c in Sources */,
+				D6B2BD0F218E42FA00F3CC8A /* mx_common.c in Sources */,
 				21C130EB214C03690021AA9D /* CreditsTableViewController.m in Sources */,
 				21C0FC6C21369EB700849420 /* AppDelegate.m in Sources */,
 			);
@@ -468,8 +474,8 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Undecimus/multi_path.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U7CBM293CM;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -487,7 +493,7 @@
 					"-framework",
 					IOKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = science.xnu.undecimus;
+				PRODUCT_BUNDLE_IDENTIFIER = geosn0w.unc0ver.yea;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -501,8 +507,8 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Undecimus/multi_path.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U7CBM293CM;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -520,7 +526,7 @@
 					"-framework",
 					IOKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = science.xnu.undecimus;
+				PRODUCT_BUNDLE_IDENTIFIER = geosn0w.unc0ver.yea;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";

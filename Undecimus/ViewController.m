@@ -5,7 +5,7 @@
 //  Created by pwn20wnd on 8/29/18.
 //  Copyright © 2018 Pwn20wnd. All rights reserved.
 //
-
+//
 #include <sys/snapshot.h>
 #include <dlfcn.h>
 #include <sys/stat.h>
@@ -17,6 +17,7 @@
 #include <libgen.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include "mx_common.h"
 #include <dirent.h>
 #include <sys/sysctl.h>
 #include <mach-o/dyld.h>
@@ -900,10 +901,6 @@ int snapshot_check(const char *vol, const char *name)
     }
     
     return 0;
-}
-
-int message_size_for_kalloc_size(int kalloc_size) {
-    return ((3*kalloc_size)/4) - 0x74;
 }
 
 void iosurface_die() {
